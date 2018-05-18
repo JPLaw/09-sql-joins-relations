@@ -24,7 +24,7 @@ app.get('/new-article', (request, response) => {
 
 // REVIEW: These are routes for making API calls to enact CRUD operations on our database.
 app.get('/articles', (request, response) => {
-  client.query(``)
+  client.query(`SELECT * FROM articles JOIN authors ON articles.author_id=authors.author_id;`)
     .then(result => {
       response.send(result.rows);
     })
@@ -53,7 +53,8 @@ app.post('/articles', (request, response) => {
       function(err, result) {
         if (err) console.error(err);
 
-        // REVIEW: This is our third query, to be executed when the second is complete. We are also passing the author_id into our third query.
+        // REVIEW: This is our third query, to be executed when the second is complete.
+        //We are also passing the author_id into our third query.
         queryThree(result.rows[0].author_id);
       }
     )
@@ -156,7 +157,8 @@ function loadArticles() {
     })
 }
 
-// REVIEW: Below are two queries, wrapped in the loadDB() function, which create separate tables in our DB, and create a relationship between the authors and articles tables.
+// REVIEW: Below are two queries, wrapped in the loadDB() function, which create separate tables in our DB,
+// and create a relationship between the authors and articles tables.
 // THEN they load their respective data from our JSON file.
 function loadDB() {
   client.query(`
