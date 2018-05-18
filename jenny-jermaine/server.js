@@ -47,38 +47,38 @@ app.post( '/articles', ( request, response ) => {
     function( err ) {
       if ( err ) console.error( err );
       // REVIEW: This is our second query, to be executed when this first query is complete.
+      console.log( 'q1 success' );
+      queryTwo();
     }
   )
 
-  queryTwo();
-  SQL = `
-  SELECT author FROM authors WHERE author = $1;
-      `;
-  values = [
-    request.body.author
-  ];
-
   function queryTwo() {
+    SQL = `
+  SELECT author_id FROM authors WHERE author = $1;
+      `;
+    values = [
+      request.body.author
+    ];
+
     client.query( SQL, values,
       function( err, result ) {
         if ( err ) console.error( err );
-
         // REVIEW: This is our third query, to be executed when the second is complete.
         //We are also passing the author_id into our third query.
+        queryThree( result.rows[ 0 ].author_id );
       }
     )
   }
 
-  queryThree( result.rows[ 0 ].author_id );
-  SQL = `
-  INSERT INTO articles 
-  `;
-  values = [];
-
   function queryThree( author_id ) {
+    SQL = `
+  INSERT INTO articles
+  `;
+    values = [];
     client.query( SQL, values,
       function( err ) {
         if ( err ) console.error( err );
+        console.log( 'q3 success' );
         response.send( 'insert complete' );
       }
     );
