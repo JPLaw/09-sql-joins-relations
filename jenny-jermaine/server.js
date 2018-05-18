@@ -64,15 +64,16 @@ app.post( '/articles', ( request, response ) => {
       function( err, result ) {
         if ( err ) console.error( err );
         // REVIEW: This is our third query, to be executed when the second is complete.
-        //We are also passing the author_id into our third query.
+        // We are also passing the author_id into our third query.
         queryThree( result.rows[ 0 ].author_id );
+        console.log( result.rows[ 0 ].author_id );
       }
     )
   }
 
   function queryThree( author_id ) {
-    SQL = `\
-  INSERT INTO articles ( author_id, title, category, "publishedOn", body )\
+    SQL = `
+  INSERT INTO articles ( author_id, title, category, "publishedOn", body )
   VALUES ($1, $2, $3, $4, $5);
   `;
     values = [
@@ -140,8 +141,7 @@ app.listen( PORT, () => {
 } );
 
 
-//////// ** DATABASE LOADERS ** ////////
-////////////////////////////////////////
+//////// ** HELPER FUNCTIONS ** ////////
 
 // REVIEW: This helper function will load authors into the DB if the DB is empty.
 function loadAuthors() {
