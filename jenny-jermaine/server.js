@@ -54,7 +54,7 @@ app.post( '/articles', ( request, response ) => {
 
   function queryTwo() {
     SQL = `
-  SELECT author_id FROM authors WHERE author = $1;
+  SELECT author_id FROM authors WHERE author=$1;
       `;
     values = [
       request.body.author
@@ -71,10 +71,17 @@ app.post( '/articles', ( request, response ) => {
   }
 
   function queryThree( author_id ) {
-    SQL = `
-  INSERT INTO articles
+    SQL = `\
+  INSERT INTO articles ( author_id, title, category, "publishedOn", body )\
+  VALUES ($1, $2, $3, $4, $5);
   `;
-    values = [];
+    values = [
+      author_id,
+      request.body.title,
+      request.body.category,
+      request.body.publishedOn,
+      request.body.body
+    ];
     client.query( SQL, values,
       function( err ) {
         if ( err ) console.error( err );
