@@ -41,10 +41,10 @@ app.post('/articles', (request, response) => {
     function(err) {
       if (err) console.error(err);
       // REVIEW: This is our second query, to be executed when this first query is complete.
-      queryTwo();
     }
   )
-
+  
+  queryTwo();
   SQL = '';
   values = [];
 
@@ -55,11 +55,11 @@ app.post('/articles', (request, response) => {
 
         // REVIEW: This is our third query, to be executed when the second is complete.
         //We are also passing the author_id into our third query.
-        queryThree(result.rows[0].author_id);
       }
     )
   }
-
+  
+  queryThree(result.rows[0].author_id);
   SQL = '';
   values = [];
 
