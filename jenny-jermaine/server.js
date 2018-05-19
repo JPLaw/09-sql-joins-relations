@@ -64,15 +64,16 @@ app.post( '/articles', ( request, response ) => {
       function( err, result ) {
         if ( err ) console.error( err );
         // REVIEW: This is our third query, to be executed when the second is complete.
-        //We are also passing the author_id into our third query.
+        // We are also passing the author_id into our third query.
         queryThree( result.rows[ 0 ].author_id );
+        console.log( result.rows[ 0 ].author_id );
       }
     )
   }
 
   function queryThree( author_id ) {
-    SQL = `\
-  INSERT INTO articles ( author_id, title, category, "publishedOn", body )\
+    SQL = `
+  INSERT INTO articles ( author_id, title, category, "publishedOn", body )
   VALUES ($1, $2, $3, $4, $5);
   `;
     values = [
@@ -93,12 +94,22 @@ app.post( '/articles', ( request, response ) => {
 } );
 
 app.put( '/articles/:id', function( request, response ) {
-  let SQL = '';
-  let values = [];
+  let SQL = 'UPDATE authors SET author=$1, "authorUrl"=$2 WHERE author_id=$3';
+  let values = [
+    request.body.author,
+    request.body.authorUrl,
+    request.body.author_id
+  ];
   client.query( SQL, values )
     .then( () => {
-      let SQL = '';
-      let values = [];
+      let SQL = 'UPDATE articles SET body=$1, category=$2, "publishedOn"=$3, title=$4 WHERE article_id=$5';
+      let values = [
+        request.body.body,
+        request.body.category,
+        request.body.publishedOn,
+        request.body.title,
+        request.params.id
+      ];
       client.query( SQL, values )
     } )
     .then( () => {
@@ -140,8 +151,7 @@ app.listen( PORT, () => {
 } );
 
 
-//////// ** DATABASE LOADERS ** ////////
-////////////////////////////////////////
+//////// ** HELPER FUNCTIONS ** ////////
 
 // REVIEW: This helper function will load authors into the DB if the DB is empty.
 function loadAuthors() {
